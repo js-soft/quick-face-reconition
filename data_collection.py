@@ -3,11 +3,11 @@ import time
 import uuid
 import cv2
 
-PATH = "data"; 
+
+PATH = "data_raw/complete/images"; 
 
 cam = cv2.VideoCapture(0); 
 number_images = 0; 
-
 while True:
     user_input = input("Press Enter to take a picture!");
     if user_input == 'q': break; 

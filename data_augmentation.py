@@ -5,9 +5,8 @@ import os
 import cv2
 import albumentations as alb
 
-
 cropwidth, cropheight = (720, 720); 
-#
+
 augmentor = alb.Compose([
     alb.RandomCrop(width=cropwidth, height=cropheight),
     alb.HorizontalFlip(p=0.5),
@@ -16,36 +15,6 @@ augmentor = alb.Compose([
     alb.RGBShift(p=0.2),
     alb.VerticalFlip(p=0.5)
 ], bbox_params=alb.BboxParams(format='albumentations', label_fields=['class_labels']));
-#
-#img = cv2.imread("data_raw/train/images/4cf96b84-2524-11ed-865e-5221c7e56001.jpg"); 
-#with open("data_raw/train/labels/4cf96b84-2524-11ed-865e-5221c7e56001.json", 'r') as f: 
-#    label = json.load(f); 
-##print(label['shapes'][0]);
-##print(img.shape);
-#
-#coords = [0, 0, 0, 0]; 
-#coords[0] = label["shapes"][0]["points"][0][0]; 
-#coords[1] = label["shapes"][0]["points"][0][1]; 
-#coords[2] = label["shapes"][0]["points"][1][0]; 
-#coords[3] = label["shapes"][0]["points"][1][1]; 
-#coords = coords / np.array([1280, 780, 1280, 780]); 
-#
-#augmented = augmentor(image=img, bboxes=[coords], class_labels=['chris']); 
-#
-#cv2.rectangle(augmented['image'],
-#        tuple(np.multiply(augmented['bboxes'][0][:2], [cropwidth, cropheight]).astype(int)),
-#        tuple(np.multiply(augmented['bboxes'][0][2:], [cropwidth, cropheight]).astype(int)), 
-#        (255, 0, 0), 2); 
-
-#plt.imshow(augmented['image']); 
-#plt.show(); 
-
-
-#print("So Far So Good!");
-
-#Manual Safety Barrier
-#quit(); 
-
 
 for partition in ["train", "test", "val"]: 
     for image_name in os.listdir(f"data_raw/{partition}/images"): 
@@ -66,7 +35,6 @@ for partition in ["train", "test", "val"]:
             for x in range(60): 
                 augmented = augmentor(image=img, bboxes=[coords], class_labels=['chris']); 
                 cv2.imwrite(f"data_aug/{partition}/images/{image_name.split('.')[0]}.{x}.jpg", augmented["image"]); 
-#                print(f"data_aug/{partition}/images/{image_name.split('.')[0]}.{x}.jpg");
                 
                 annotation = {}; 
                 annotation['image'] = image_name; 
