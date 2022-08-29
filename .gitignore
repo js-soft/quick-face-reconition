@@ -1,0 +1,11 @@
+
+.DS_Store
+.virtual_documents/
+__pycache__/
+data_aug_720x720/
+data_raw_1280x720/
+models/
+testbench.py
+.gitignore.swp
+
+
