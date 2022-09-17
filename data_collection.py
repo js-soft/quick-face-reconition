@@ -4,7 +4,9 @@ import uuid
 import cv2
 
 
-PATH = "data_raw/complete/images"; 
+#PATH = "data_raw/complete/images"; 
+PATH = "data_example/raw/images"
+
 
 cam = cv2.VideoCapture(0); 
 number_images = 0; 
@@ -22,6 +24,10 @@ while True:
 cam.release(); 
 cv2.destroyAllWindows(); 
 print(f"Finished taking {number_images} Images!"); 
+
+
+
+
 
 
 
