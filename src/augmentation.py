@@ -1,7 +1,6 @@
 import os
 import albumentations as alb
 import numpy as np
-
 from src import util
 
 

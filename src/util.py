@@ -1,5 +1,4 @@
 import numpy as np
-from matplotlib import figure, axes, patches, pyplot as plt
 import pylab as plt
 import PIL as pil
 from plotnine import *
@@ -14,6 +13,11 @@ from copy import deepcopy
 
 
 class ImgType(Enum):
+    """Enum for the different image data types that we encounter here.
+
+    Provides some helper functionality to convert between the different image
+    formats. Implemented as needed."""
+
     np_u8 = 1
     np_f32 = 2
     pil = 3
@@ -48,68 +52,10 @@ class ImgType(Enum):
         raise NotImplementedError()
 
 
-def viz(img):
-    """Visualizes an image in numpy uint8 format"""
-    img_pil = ImgType.convert(img, ImgType.pil)
-    return img_pil
-
-
-def draw_images(images, bboxes=None, num_cols=5):
-    """Draws images and, optionally, their bounding boxes in a grid layout
-
-    images: Iterable of images in numpy or pytorch format
-    bboxes: Optional iterable of bounding boxes in albumentations format. One bounding box per image.
-    num_cols: Width of the grid layout
-    """
-    num_rows = int(np.ceil(len(images) / num_cols))
-    fig = plt.gcf()
-    for ii, image in enumerate(images):
-        row = (ii + 1) // (num_cols + 1)
-        col = ii - row * num_cols
-        ax = plt.subplot2grid((num_rows, num_cols), (row, col), fig=fig)
-        _draw_image_onto_ax(ax, image, None if bboxes is None else bboxes[ii])
-        fig.set_size_inches(18.5, 10.5, forward=True)
-
-
-def _draw_image_onto_ax(ax, image, bbox=None):
-    """Helper drawing an image onto an existing axis"""
-
-    if type(image) == torch.Tensor:
-        pil_img = torchvision.transforms.ToPILImage()(image)
-        image = np.asarray(pil_img) / 255.0
-    if type(bbox) == torch.Tensor:
-        bbox = bbox.detach().cpu().numpy()
-    ax.imshow(image)
-
-    h, w, _ = image.shape
-    if bbox is not None:
-        bbox_tl_x, bbox_tl_y = bbox[0] * w, bbox[1] * h
-        bbox_br_x, bbox_br_y = bbox[2] * w, bbox[3] * h
-        bbox_h = bbox_br_y - bbox_tl_y
-        bbox_w = bbox_br_x - bbox_tl_x
-        rect = patches.Rectangle((bbox_tl_x, bbox_tl_y), bbox_w, bbox_h, linewidth=1, edgecolor="r", facecolor="none")
-        ax.add_patch(rect)
-
-    return ax
-
-
-def grab_snapshot(w_cam, h_cam, cam_device_id=0):
-    cam = cv2.VideoCapture(cam_device_id)
-    cam.set(cv2.CAP_PROP_BUFFERSIZE, 1)
-    cam.set(cv2.CAP_PROP_FRAME_WIDTH, w_cam)
-    cam.set(cv2.CAP_PROP_FRAME_HEIGHT, h_cam)
-
-    while True:
-        cam.read()
-        _, img = cam.read()
-        yield img
-
-
 def read_cam(resolution=(800, 600), device_id=0):
-    """Returns a generator yielding images format from a video capture device.
+    """Returns a generator yielding images from a video capture device.
 
     Images are returned in np_u8 format."""
-
     cam = cv2.VideoCapture(device_id)
     cam.set(cv2.CAP_PROP_BUFFERSIZE, 1)
     cam.set(cv2.CAP_PROP_FRAME_WIDTH, resolution[0])

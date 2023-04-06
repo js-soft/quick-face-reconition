@@ -131,7 +131,10 @@ def train_epoch(model: nn.Module, device, train_dataloader, optim, cb=None):
 
 
 def eval_performance(model, dataloader, compute_std=False):
-    """Evaluates performance of a model on a dataset"""
+    """Evaluates performance of a model on a dataset.
+    
+    Returns a dict with keys 'loss_mean' and 'loss_std', if compute_std is
+    set."""
     result = {}
 
     model.eval()
@@ -184,17 +187,17 @@ class DataFromDisk(Dataset):
 
     Pairs are returned in lexicographical order of the respective filenames.
 
-    directory: Path to input directory containing images in PNG format and one
+    dpath: Path to input directory containing images in PNG format and one
         eponymous csv file per image, which contains its label.
     transform_x: Callable to transform the output images when using the []-operator.
     transform_y: Callable to transform the label when using the []-operator.
     """
 
-    def __init__(self, directory, transform_x=None, transform_y=None):
+    def __init__(self, dpath, transform_x=None, transform_y=None):
         self.transform_x = transform_x
         self.transform_y = transform_y
-        self.image_paths = sorted([f"{directory}/{path}" for path in os.listdir(directory) if path.endswith(".png")])
-        self.label_paths = sorted([f"{directory}/{path}" for path in os.listdir(directory) if path.endswith(".csv")])
+        self.image_paths = sorted([f"{dpath}/{path}" for path in os.listdir(dpath) if path.endswith(".png")])
+        self.label_paths = sorted([f"{dpath}/{path}" for path in os.listdir(dpath) if path.endswith(".csv")])
 
     def __len__(self):
         return len(self.image_paths)
