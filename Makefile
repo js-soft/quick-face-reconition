@@ -1,8 +1,5 @@
-readme:
-	jupyter nbconvert --clear-output --stdout notebook.ipynb | \
-		jupyter nbconvert --to markdown --output README.md --stdin
-
 init:
+	# Sets up the git filter to strip output from jupyter notebooks
 	git config --local include.path ../.gitconfig
 	
-.PHONY: readme init
+.PHONY: init
